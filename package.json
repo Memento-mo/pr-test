@@ -1,0 +1,15 @@
+{
+  "name": "ai-pr-review",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "review": "node scripts/ai-pr-review.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.0",
+    "@octokit/auth-action": "^4.0.0",
+    "openai": "^4.30.0",
+    "node-fetch": "^3.3.2"
+  }
+}
