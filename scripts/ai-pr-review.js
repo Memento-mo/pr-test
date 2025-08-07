@@ -10,15 +10,15 @@ import 'dotenv/config'
 
 // ---------- 1. Конфигурация ----------
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+// const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const GIGACHAT_API_KEY = process.env.GIGACHAT_API_KEY;
 
 if (!GITHUB_TOKEN) {
   console.error('❌ GITHUB_TOKEN missing!');
   process.exit(1);
 }
-if (!DEEPSEEK_API_KEY) {
-  console.error('❌ DEEPSEEK_API_KEY missing!');
+if (!GIGACHAT_API_KEY) {
+  console.error('❌ GIGACHAT_API_KEY missing!');
   process.exit(1);
 }
 
