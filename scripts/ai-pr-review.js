@@ -40,7 +40,7 @@ const octokit = new Octokit({
 
 const gigachat = new GigaChat({
     timeout: 600,
-    model: 'GigaChat',
+    model: 'GigaChat-Max',
     credentials: GIGACHAT_API_KEY,
     httpsAgent: httpsAgent
 })
