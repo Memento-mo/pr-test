@@ -1,12 +1,17 @@
 // scripts/ai-pr-review.js
 import { Octokit } from '@octokit/rest';
-import { OpenAI } from 'openai';
+// import { OpenAI } from 'openai';
+import GigaChat from 'gigachat'
+import { Agent } from 'node:https';
+
 import * as process from 'process';
 import * as fs from 'fs';
+import 'dotenv/config'
 
 // ---------- 1. Конфигурация ----------
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+const GIGACHAT_API_KEY = process.env.GIGACHAT_API_KEY;
 
 if (!GITHUB_TOKEN) {
   console.error('❌ GITHUB_TOKEN missing!');
@@ -17,17 +22,28 @@ if (!DEEPSEEK_API_KEY) {
   process.exit(1);
 }
 
+const httpsAgent = new Agent({
+  rejectUnauthorized: false, // Отключает проверку корневого сертификата
+  // Читайте ниже как можно включить проверку сертификата Мин. Цифры
+});
+
 // Octokit – работа с GitHub API
 const octokit = new Octokit({
   auth: GITHUB_TOKEN,
 });
 
 // DeepSeek через openai‑клиент (указываем baseURL)
-const openai = new OpenAI({
-  apiKey: DEEPSEEK_API_KEY,
-  baseURL: 'https://api.deepseek.com/v1', // <-- важный момент
-});
+// const openai = new OpenAI({
+//   apiKey: DEEPSEEK_API_KEY,
+//   baseURL: 'https://api.deepseek.com/v1', // <-- важный момент
+// });
 
+const gigachat = new GigaChat({
+    timeout: 600,
+    model: 'GigaChat Max',
+    credentials: GIGACHAT_API_KEY,
+    httpsAgent: httpsAgent
+})
 // Параметры окружения, переданные из workflow
 const REPO_OWNER = process.env.REPO_OWNER;
 const REPO_NAME  = process.env.REPO_NAME;
@@ -114,12 +130,16 @@ ${diffTexts}
 
 // ---------- 4. Запрос к DeepSeek ----------
 async function getAiReview(prompt) {
-  // deepseek‑coder – модель, оптимизированная под код
-  const response = await openai.chat.completions.create({
-    model: 'deepseek-coder',    // либо 'deepseek-chat' если нужен более общие ответы
+//   const response = await openai.chat.completions.create({
+//     model: 'deepseek-chat',    // либо 'deepseek-chat' если нужен более общие ответы
+//     messages: [{ role: 'user', content: prompt }],
+//     temperature: 0.2,           // более детерминированные ответы
+//     max_tokens: 1500,           // адаптируйте под ваши лимиты
+//   });
+  const response = await gigachat.chat({
     messages: [{ role: 'user', content: prompt }],
-    temperature: 0.2,           // более детерминированные ответы
-    max_tokens: 1500,           // адаптируйте под ваши лимиты
+    temperature: 0.2,
+    max_tokens: 1500,
   });
 
   const answer = response.choices?.[0]?.message?.content?.trim();

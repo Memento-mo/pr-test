@@ -37,5 +37,5 @@ jobs:
       - name: Run AI review (DeepSeek)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GIGACHAT_API_KEY: ${{ secrets.GIGACHAT_API_KEY }}
         run: npm run review
